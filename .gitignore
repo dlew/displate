@@ -1,3 +1,6 @@
+# Ignore the cache directory
+http_cache
+
 #######################
 ##### Jetbrains #######
 #######################
