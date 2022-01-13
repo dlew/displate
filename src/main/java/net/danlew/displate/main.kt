@@ -68,7 +68,7 @@ fun displatesToCsvData(dualDisplates: List<DualDisplates>): List<List<String?>> 
       limited.title,
       limited.url?.let { "https://displate.com$it" },
       limited.edition.size.toString(),
-      limited.author?.fullName,
+      limited.author?.fullName?.trim() ?: "Unknown",
       limited.author?.url,
       normal?.imageUrl,
       normal?.title,
