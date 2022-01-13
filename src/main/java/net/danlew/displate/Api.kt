@@ -24,7 +24,10 @@ object Api {
       HttpLoggingInterceptor().apply { setLevel(Level.BASIC) }
     )
     .build()
-  val moshi = Moshi.Builder().build()
+
+  val moshi = Moshi.Builder()
+    .add(LocalDateTimeAdapter)
+    .build()
 
   fun queryLimitedEditions(): List<Displate>? {
     client.newCall(

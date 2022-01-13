@@ -1,6 +1,9 @@
 # Ignore the cache directory
 http_cache
 
+# Ignore the output of the code
+output.csv
+
 #######################
 ##### Jetbrains #######
 #######################
