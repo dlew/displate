@@ -3,6 +3,6 @@ package net.danlew.displate.model
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class DisplateSingleResponse(
-  val data: Displate
+data class LimitedDisplateResponse(
+  val data: LimitedDisplate
 )

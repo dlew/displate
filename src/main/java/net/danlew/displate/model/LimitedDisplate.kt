@@ -3,7 +3,7 @@ package net.danlew.displate.model
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class Displate(
+data class LimitedDisplate(
   val title: String,
   val edition: Edition,
   val images: Images,
