@@ -30,7 +30,6 @@ fun gatherNormalEditions(limitedEditions: List<LimitedDisplate>): List<DualDispl
   return limitedEditions.map { limited ->
     var normal: NormalDisplate? = null
     if (limited.itemCollectionId != null) {
-      require(limited.itemCollectionId in Data.limitedToNormal) { "No normal info for ${limited.itemCollectionId}" }
       val normalId = Data.limitedToNormal[limited.itemCollectionId]
       if (normalId != null) {
         normal = Api.normalDetails(normalId)
