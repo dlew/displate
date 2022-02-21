@@ -3,15 +3,21 @@ package net.danlew.displate
 import net.danlew.displate.model.DualDisplates
 import net.danlew.displate.model.LimitedDisplate
 import net.danlew.displate.model.NormalDisplate
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVPrinter
 import java.io.FileWriter
+import java.nio.file.Files
+import java.nio.file.Paths
+import kotlin.io.path.exists
 
 fun main() {
   val displateData = gatherLimitedEditionData().sortedBy { it.edition.startDate }
   val dualDisplateData = gatherNormalEditions(displateData)
   val csvData = displatesToCsvData(dualDisplateData)
   outputToCsv(csvData)
+
+  downloadImages(displateData)
 }
 
 fun gatherLimitedEditionData(): List<LimitedDisplate> {
@@ -82,6 +88,21 @@ fun outputToCsv(data: List<List<String?>>) {
   CSVPrinter(FileWriter("output.csv"), CSVFormat.DEFAULT).use { printer ->
     data.forEach { row ->
       printer.printRecord(row)
+    }
+  }
+}
+
+fun downloadImages(displate: List<LimitedDisplate>) {
+  val outputPath = Files.createDirectories(Paths.get("images/"))
+
+  displate.forEach { displate ->
+    val imageUrl = displate.images.main.url.toHttpUrl()
+
+    val fileName = imageUrl.pathSegments.last()
+    val destination = outputPath.resolve(fileName)
+
+    if (!destination.exists()) {
+      Api.image(imageUrl, destination)
     }
   }
 }

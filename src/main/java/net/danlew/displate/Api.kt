@@ -2,12 +2,13 @@ package net.danlew.displate
 
 import com.squareup.moshi.Moshi
 import net.danlew.displate.model.*
-import okhttp3.Cache
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
+import okio.buffer
+import okio.sink
 import java.io.File
+import java.nio.file.Path
 
 object Api {
 
@@ -81,4 +82,24 @@ object Api {
     }
   }
 
+  fun image(url: HttpUrl, destination: Path) {
+    client.newCall(
+      Request.Builder()
+        .url(url)
+        .get()
+        .build()
+    ).execute().use { response ->
+      if (!response.isSuccessful) {
+        throw IllegalStateException("Did not successfully download image: $response")
+      }
+
+      response.writeToPath(destination)
+    }
+  }
+
+  private fun Response.writeToPath(path: Path) {
+    path.sink().buffer().use { sink ->
+      sink.writeAll(body!!.source())
+    }
+  }
 }

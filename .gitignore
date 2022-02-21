@@ -3,6 +3,7 @@ http_cache
 
 # Ignore the output of the code
 output.csv
+images/
 
 #######################
 ##### Jetbrains #######
