@@ -3,6 +3,8 @@ package net.danlew.displate
 import com.squareup.moshi.Moshi
 import net.danlew.displate.model.*
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
 import okio.buffer
@@ -79,6 +81,24 @@ object Api {
         .adapter(NormalDisplateResponse::class.java)
         .fromJson(response.body!!.source())!!
         .data
+    }
+  }
+
+  fun isSoldOut(itemCollectionId: Int): Boolean? {
+    client.newCall(
+      Request.Builder()
+        .url("https://displate.com/cart-add")
+        .post("{\"item-id\":$itemCollectionId}".toRequestBody("application/json".toMediaType()))
+        .build()
+    ).execute().use { response ->
+      if (!response.isSuccessful) {
+        return null
+      }
+
+      return moshi
+        .adapter(AddToCartResponse::class.java)
+        .fromJson(response.body!!.source())!!
+        .code == -1
     }
   }
 

@@ -25,9 +25,13 @@ fun gatherLimitedEditionData(): List<LimitedDisplate> {
 
   return allLimitedDisplates.map { displate ->
     if (displate.itemCollectionId != null) {
-      Api.limitedDetails(displate.itemCollectionId)!!
+      val limitedDisplate = Api.limitedDetails(displate.itemCollectionId)!!
+      Thread.sleep(400)
+      val isSoldOut = Api.isSoldOut(displate.itemCollectionId)
+      Thread.sleep(400)
+      limitedDisplate.copy(isSoldOut = isSoldOut)
     } else {
-      displate
+      displate.copy(isSoldOut = false) // Assume that pre-release LEs are not sold out :P
     }
   }
 }
@@ -39,6 +43,7 @@ fun gatherNormalEditions(limitedEditions: List<LimitedDisplate>): List<DualDispl
       val normalId = Data.limitedToNormal[limited.itemCollectionId]
       if (normalId != null) {
         normal = Api.normalDetails(normalId)
+        Thread.sleep(400)
       }
     }
 
@@ -62,7 +67,8 @@ fun displatesToCsvData(dualDisplates: List<DualDisplates>): List<List<String?>> 
     "Artist Link",
     "Normal Image",
     "Normal Name",
-    "Normal Link"
+    "Normal Link",
+    "Sold Out"
   )
 
   val rows = dualDisplates.map { (limited, normal) ->
@@ -77,7 +83,8 @@ fun displatesToCsvData(dualDisplates: List<DualDisplates>): List<List<String?>> 
       limited.author?.url,
       normal?.imageUrl,
       normal?.title,
-      normal?.itemCollectionId?.let { "https://displate.com/displate/$it" }
+      normal?.itemCollectionId?.let { "https://displate.com/displate/$it" },
+      limited.isSoldOut?.toString() ?: "unknown",
     )
   }
 
