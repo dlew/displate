@@ -25,13 +25,10 @@ fun gatherLimitedEditionData(): List<LimitedDisplate> {
 
   return allLimitedDisplates.map { displate ->
     if (displate.itemCollectionId != null) {
-      val limitedDisplate = Api.limitedDetails(displate.itemCollectionId)!!
       Thread.sleep(400)
-      val isSoldOut = Api.isSoldOut(displate.itemCollectionId)
-      Thread.sleep(400)
-      limitedDisplate.copy(isSoldOut = isSoldOut)
+      Api.limitedDetails(displate.itemCollectionId)!!
     } else {
-      displate.copy(isSoldOut = false) // Assume that pre-release LEs are not sold out :P
+      displate
     }
   }
 }
@@ -83,8 +80,7 @@ fun displatesToCsvData(dualDisplates: List<DualDisplates>): List<List<String?>> 
       limited.author?.url,
       normal?.imageUrl,
       normal?.title,
-      normal?.itemCollectionId?.let { "https://displate.com/displate/$it" },
-      limited.isSoldOut?.toString() ?: "unknown",
+      normal?.itemCollectionId?.let { "https://displate.com/displate/$it" }
     )
   }
 

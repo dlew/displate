@@ -13,8 +13,5 @@ data class LimitedDisplate(
   val url: String?,
 
   // Only present on full detail calls
-  val author: Author?,
-
-  // Indirectly from API
-  val isSoldOut: Boolean?
+  val author: Author?
 )
