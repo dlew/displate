@@ -6,5 +6,6 @@ import java.time.LocalDateTime
 @JsonClass(generateAdapter = true)
 data class Edition(
   val startDate: LocalDateTime,
-  val size: Int
+  val size: Int,
+  val type: LimitedType
 )

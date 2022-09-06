@@ -65,7 +65,7 @@ fun displatesToCsvData(dualDisplates: List<DualDisplates>): List<List<String?>> 
     "Normal Image",
     "Normal Name",
     "Normal Link",
-    "Sold Out"
+    "Size"
   )
 
   val rows = dualDisplates.map { (limited, normal) ->
@@ -80,7 +80,8 @@ fun displatesToCsvData(dualDisplates: List<DualDisplates>): List<List<String?>> 
       limited.author?.url,
       normal?.imageUrl,
       normal?.title,
-      normal?.itemCollectionId?.let { "https://displate.com/displate/$it" }
+      normal?.itemCollectionId?.let { "https://displate.com/displate/$it" },
+      limited.edition.type.size
     )
   }
 
