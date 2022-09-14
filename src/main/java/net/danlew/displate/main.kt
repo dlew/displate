@@ -25,7 +25,7 @@ fun gatherLimitedEditionData(): List<LimitedDisplate> {
 
   return allLimitedDisplates.map { displate ->
     if (displate.itemCollectionId != null) {
-      Thread.sleep(400)
+      Thread.sleep(500)
       Api.limitedDetails(displate.itemCollectionId)!!
     } else {
       displate
