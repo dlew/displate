@@ -12,7 +12,10 @@ import java.nio.file.Paths
 import kotlin.io.path.exists
 
 fun main() {
-  val displateData = gatherLimitedEditionData().sortedBy { it.edition.startDate }
+  val displateData = gatherLimitedEditionData()
+    .sortedWith(
+      compareBy<LimitedDisplate> { it.edition.startDate}.thenBy { it.itemCollectionId }
+    )
   val dualDisplateData = gatherNormalEditions(displateData)
   val csvData = displatesToCsvData(dualDisplateData)
   outputToCsv(csvData)
