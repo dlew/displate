@@ -2,6 +2,9 @@ package net.danlew.displate
 
 import net.danlew.displate.model.DualDisplates
 import net.danlew.displate.model.LimitedDisplate
+import net.danlew.displate.model.LimitedType
+import net.danlew.displate.model.LimitedType.standard
+import net.danlew.displate.model.LimitedType.ultra
 import net.danlew.displate.model.NormalDisplate
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.apache.commons.csv.CSVFormat
@@ -9,12 +12,14 @@ import org.apache.commons.csv.CSVPrinter
 import java.io.FileWriter
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.time.LocalDate
+import java.time.LocalDateTime
 import kotlin.io.path.exists
 
 fun main() {
   val displateData = gatherLimitedEditionData()
     .sortedWith(
-      compareBy<LimitedDisplate> { it.edition.startDate}.thenBy { it.itemCollectionId }
+      compareBy<LimitedDisplate> { it.edition.startDate }.thenBy { it.itemCollectionId }
     )
   val dualDisplateData = gatherNormalEditions(displateData)
   val csvData = displatesToCsvData(dualDisplateData)
@@ -86,11 +91,21 @@ fun displatesToCsvData(dualDisplates: List<DualDisplates>): List<List<String?>> 
       normal?.title,
       normal?.itemCollectionId?.let { "https://displate.com/displate/$it" },
       limited.edition.type.size,
-      limited.edition.type.cost.toString()
+      getCost(limited.edition.type, limited.edition.startDate).toString()
     )
   }
 
   return listOf(headers) + rows
+}
+
+private val PRICE_CUTOFF = LocalDate.of(2023, 7, 1)
+
+fun getCost(type: LimitedType, startDate: LocalDateTime): Int {
+  val lowerPrice = startDate.toLocalDate().isBefore(PRICE_CUTOFF)
+  return when (type) {
+    standard -> if (lowerPrice) 139 else 149
+    ultra -> if (lowerPrice) 289 else 299
+  }
 }
 
 fun outputToCsv(data: List<List<String?>>) {
