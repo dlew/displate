@@ -3,8 +3,7 @@ package net.danlew.displate
 import net.danlew.displate.model.DualDisplates
 import net.danlew.displate.model.LimitedDisplate
 import net.danlew.displate.model.LimitedType
-import net.danlew.displate.model.LimitedType.standard
-import net.danlew.displate.model.LimitedType.ultra
+import net.danlew.displate.model.LimitedType.*
 import net.danlew.displate.model.NormalDisplate
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.apache.commons.csv.CSVFormat
@@ -17,22 +16,24 @@ import java.time.LocalDateTime
 import kotlin.io.path.exists
 
 fun main() {
-  val displateData = gatherLimitedEditionData()
-    .sortedWith(
-      compareBy<LimitedDisplate> { it.edition.startDate }.thenBy { it.itemCollectionId }
-    )
-  val dualDisplateData = gatherNormalEditions(displateData)
+  val displateData = gatherLimitedEditionData() + Api.queryLuminos()!!
+
+  val sortedDisplateData = displateData.sortedWith(
+    compareBy<LimitedDisplate> { it.edition.startDate }.thenBy { it.itemCollectionId }
+  )
+
+  val dualDisplateData = gatherNormalEditions(sortedDisplateData)
   val csvData = displatesToCsvData(dualDisplateData)
   outputToCsv(csvData)
 
-  downloadImages(displateData)
+  downloadImages(sortedDisplateData)
 }
 
 fun gatherLimitedEditionData(): List<LimitedDisplate> {
   val allLimitedDisplates = Api.queryLimitedEditions()!!
 
   return allLimitedDisplates.map { displate ->
-    Thread.sleep(500)
+    Thread.sleep(400)
     Api.limitedDetails(displate.itemCollectionId)!!
   }
 }
@@ -99,6 +100,7 @@ fun getCost(type: LimitedType, startDate: LocalDateTime): Int {
   return when (type) {
     standard -> if (lowerPrice) 139 else 149
     ultra -> if (lowerPrice) 289 else 299
+    lumino -> 299
   }
 }
 

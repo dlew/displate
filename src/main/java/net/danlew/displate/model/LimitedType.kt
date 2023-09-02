@@ -2,5 +2,6 @@ package net.danlew.displate.model
 
 enum class LimitedType(val size: String) {
   standard("M"),
-  ultra("L")
+  ultra("L"),
+  lumino("Lumino"),
 }

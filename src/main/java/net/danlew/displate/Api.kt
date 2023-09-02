@@ -2,9 +2,9 @@ package net.danlew.displate
 
 import com.squareup.moshi.Moshi
 import net.danlew.displate.model.*
+import net.danlew.displate.moshi.LocalDateTimeAdapter
+import net.danlew.displate.moshi.LuminoLocalDateTimeAdapter
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
 import okio.buffer
@@ -28,6 +28,7 @@ object Api {
 
   val moshi = Moshi.Builder()
     .add(LocalDateTimeAdapter)
+    .add(LuminoLocalDateTimeAdapter)
     .build()
 
   fun queryLimitedEditions(): List<LimitedDisplate>? {
@@ -81,6 +82,25 @@ object Api {
         .adapter(NormalDisplateResponse::class.java)
         .fromJson(response.body!!.source())!!
         .data
+    }
+  }
+
+  fun queryLuminos(): List<LimitedDisplate>? {
+    client.newCall(
+      Request.Builder()
+        .url("https://displate.com/elysium-api/general/v2/lumino/listing")
+        .get()
+        .build()
+    ).execute().use { response ->
+      if (!response.isSuccessful) {
+        return null
+      }
+
+      val luminos = moshi
+        .adapter(AllLuminosResponse::class.java)
+        .fromJson(response.body!!.source())!!
+
+      return luminos.active.map(Lumino::toLimitedDisplate) + luminos.soldOut.map(Lumino::toLimitedDisplate) + luminos.upcoming.map(Lumino::toLimitedDisplate)
     }
   }
 

@@ -1,4 +1,4 @@
-package net.danlew.displate
+package net.danlew.displate.moshi
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
