@@ -24,7 +24,7 @@ data class Lumino(
       main = Image(this.image.x2)
     ),
     itemCollectionId = this.externalId,
-    url = "https://displate.com/lumino/${this.externalId}",
+    url = "/lumino/${this.externalId}",
     author = this.author
   )
 }
