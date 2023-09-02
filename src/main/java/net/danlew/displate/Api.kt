@@ -84,24 +84,6 @@ object Api {
     }
   }
 
-  fun isSoldOut(itemCollectionId: Int): Boolean? {
-    client.newCall(
-      Request.Builder()
-        .url("https://displate.com/cart-add")
-        .post("{\"item-id\":$itemCollectionId}".toRequestBody("application/json".toMediaType()))
-        .build()
-    ).execute().use { response ->
-      if (!response.isSuccessful) {
-        return null
-      }
-
-      return moshi
-        .adapter(AddToCartResponse::class.java)
-        .fromJson(response.body!!.source())!!
-        .code == -1
-    }
-  }
-
   fun image(url: HttpUrl, destination: Path) {
     client.newCall(
       Request.Builder()
