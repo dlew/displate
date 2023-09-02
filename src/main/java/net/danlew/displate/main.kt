@@ -68,7 +68,7 @@ fun displatesToCsvData(dualDisplates: List<DualDisplates>): List<List<String?>> 
     "Normal Image",
     "Normal Name",
     "Normal Link",
-    "Size",
+    "Type",
     "Cost",
   )
 
@@ -85,7 +85,7 @@ fun displatesToCsvData(dualDisplates: List<DualDisplates>): List<List<String?>> 
       normal?.imageUrl,
       normal?.title,
       normal?.itemCollectionId?.let { "https://displate.com/displate/$it" },
-      limited.edition.type.size,
+      limited.edition.type.type,
       getCost(limited.edition.type, limited.edition.startDate).toString()
     )
   }
