@@ -33,7 +33,6 @@ fun gatherLimitedEditionData(): List<LimitedDisplate> {
   val allLimitedDisplates = Api.queryLimitedEditions()!!
 
   return allLimitedDisplates.map { displate ->
-    Thread.sleep(400)
     Api.limitedDetails(displate.itemCollectionId)!!
   }
 }
@@ -44,7 +43,6 @@ fun gatherNormalEditions(limitedEditions: List<LimitedDisplate>): List<DualDispl
     val normalId = Data.limitedToNormal[limited.itemCollectionId]
     if (normalId != null) {
       normal = Api.normalDetails(normalId)
-      Thread.sleep(400)
     }
 
     return@map DualDisplates(

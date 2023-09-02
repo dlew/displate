@@ -5,6 +5,7 @@ import net.danlew.displate.model.*
 import net.danlew.displate.moshi.LocalDateTimeAdapter
 import net.danlew.displate.moshi.LuminoLocalDateTimeAdapter
 import okhttp3.*
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
 import okio.buffer
@@ -14,13 +15,31 @@ import java.nio.file.Path
 
 object Api {
 
+  private val DO_NOT_CACHE = listOf(
+    "https://sapi.displate.com/artworks/limited?miso=US".toHttpUrl(),
+    "https://displate.com/elysium-api/general/v2/lumino/listing".toHttpUrl()
+  )
+
   private val client = OkHttpClient.Builder()
     .cache(
       Cache(
         directory = File(".", "http_cache"),
-        maxSize = 50L * 1024L * 1024L // 50 MiB
+        maxSize = 100L * 1024L * 1024L // 100 MiB
       )
     )
+    .addNetworkInterceptor { chain ->
+      // Displate's API doesn't cache automatically, but we can force it to cache most responses (except listing ones)
+      val request = chain.request()
+      val originalResponse = chain.proceed(request)
+
+      if (request.url in DO_NOT_CACHE) {
+        return@addNetworkInterceptor originalResponse
+      }
+
+      return@addNetworkInterceptor originalResponse.newBuilder()
+        .header("Cache-Control", "private, only-if-cached, max-age=31536000")
+        .build()
+    }
     .addInterceptor(
       HttpLoggingInterceptor().apply { setLevel(Level.BASIC) }
     )
@@ -100,7 +119,9 @@ object Api {
         .adapter(AllLuminosResponse::class.java)
         .fromJson(response.body!!.source())!!
 
-      return luminos.active.map(Lumino::toLimitedDisplate) + luminos.soldOut.map(Lumino::toLimitedDisplate) + luminos.upcoming.map(Lumino::toLimitedDisplate)
+      return luminos.active.map(Lumino::toLimitedDisplate) +
+          luminos.soldOut.map(Lumino::toLimitedDisplate) +
+          luminos.upcoming.map(Lumino::toLimitedDisplate)
     }
   }
 
