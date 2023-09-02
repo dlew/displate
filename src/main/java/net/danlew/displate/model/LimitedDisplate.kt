@@ -8,9 +8,8 @@ data class LimitedDisplate(
   val edition: Edition,
   val images: Images,
 
-  // Null if LE is not yet released
-  val itemCollectionId: Int?,
-  val url: String?,
+  val itemCollectionId: Int,
+  val url: String,
 
   // Only present on full detail calls
   val author: Author?

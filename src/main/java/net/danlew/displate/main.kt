@@ -32,24 +32,18 @@ fun gatherLimitedEditionData(): List<LimitedDisplate> {
   val allLimitedDisplates = Api.queryLimitedEditions()!!
 
   return allLimitedDisplates.map { displate ->
-    if (displate.itemCollectionId != null) {
-      Thread.sleep(500)
-      Api.limitedDetails(displate.itemCollectionId)!!
-    } else {
-      displate
-    }
+    Thread.sleep(500)
+    Api.limitedDetails(displate.itemCollectionId)!!
   }
 }
 
 fun gatherNormalEditions(limitedEditions: List<LimitedDisplate>): List<DualDisplates> {
   return limitedEditions.map { limited ->
     var normal: NormalDisplate? = null
-    if (limited.itemCollectionId != null) {
-      val normalId = Data.limitedToNormal[limited.itemCollectionId]
-      if (normalId != null) {
-        normal = Api.normalDetails(normalId)
-        Thread.sleep(400)
-      }
+    val normalId = Data.limitedToNormal[limited.itemCollectionId]
+    if (normalId != null) {
+      normal = Api.normalDetails(normalId)
+      Thread.sleep(400)
     }
 
     return@map DualDisplates(
@@ -79,11 +73,11 @@ fun displatesToCsvData(dualDisplates: List<DualDisplates>): List<List<String?>> 
 
   val rows = dualDisplates.map { (limited, normal) ->
     listOf(
-      limited.itemCollectionId?.toString() ?: "Unknown",
+      limited.itemCollectionId.toString() ?: "Unknown",
       limited.edition.startDate.toLocalDate().toString(),
       limited.images.main.url,
       limited.title,
-      limited.url?.let { "https://displate.com$it" },
+      limited.url.let { "https://displate.com$it" },
       limited.edition.size.toString(),
       limited.author?.fullName?.trim() ?: "Unknown",
       limited.author?.url,
