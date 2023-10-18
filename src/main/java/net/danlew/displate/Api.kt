@@ -17,7 +17,7 @@ object Api {
 
   private val DO_NOT_CACHE = listOf(
     "https://sapi.displate.com/artworks/limited?miso=US".toHttpUrl(),
-    "https://displate.com/elysium-api/general/v2/lumino/listing".toHttpUrl()
+    "https://displate.com/elysium-api/general/v3/lumino/listing".toHttpUrl()
   )
 
   private val client = OkHttpClient.Builder()
@@ -107,7 +107,7 @@ object Api {
   fun queryLuminos(): List<LimitedDisplate>? {
     client.newCall(
       Request.Builder()
-        .url("https://displate.com/elysium-api/general/v2/lumino/listing")
+        .url("https://displate.com/elysium-api/general/v3/lumino/listing")
         .get()
         .build()
     ).execute().use { response ->
@@ -116,8 +116,9 @@ object Api {
       }
 
       val luminos = moshi
-        .adapter(AllLuminosResponse::class.java)
+        .adapter(LuminoResponse::class.java)
         .fromJson(response.body!!.source())!!
+        .luminoListings
 
       return luminos.active.map(Lumino::toLimitedDisplate) +
           luminos.soldOut.map(Lumino::toLimitedDisplate) +
