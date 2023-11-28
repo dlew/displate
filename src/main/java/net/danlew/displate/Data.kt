@@ -2,6 +2,14 @@ package net.danlew.displate
 
 object Data {
 
+  // When multiple limiteds are variants of each other
+  val variants = listOf(
+    listOf(6398013, 6398010), // Dawn/Dusk Hydra
+    listOf(6797271, 6648787), // Kenzo/Black Bakeneko
+    listOf(6846326, 6846294), // White/Red Kitsune
+  )
+
+  // When a limited has a non-limited version
   val limitedToNormal = mapOf(
     2142476 to 673878,
     2145124 to 673875,
