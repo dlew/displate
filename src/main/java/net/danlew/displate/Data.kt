@@ -7,6 +7,7 @@ object Data {
     listOf(6398013, 6398010), // Dawn/Dusk Hydra
     listOf(6797271, 6648787), // Kenzo/Black Bakeneko
     listOf(6846326, 6846294), // White/Red Kitsune
+    listOf(7047598, 7047576), // Tail of the Past / Roar of the Future
   )
 
   // When a limited has a non-limited version
