@@ -40,6 +40,13 @@ object Api {
         .header("Cache-Control", "private, only-if-cached, max-age=31536000")
         .build()
     }
+    .addNetworkInterceptor { chain ->
+      val request = chain.request()
+      val requestWithUa = request.newBuilder()
+        .header("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'")
+        .build()
+      return@addNetworkInterceptor chain.proceed(requestWithUa)
+    }
     .addInterceptor(
       HttpLoggingInterceptor().apply { setLevel(Level.BASIC) }
     )
