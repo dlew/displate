@@ -1,9 +1,7 @@
 package net.danlew.displate
 
-import net.danlew.displate.model.LimitedType
+import net.danlew.displate.Logic.getCost
 import net.danlew.displate.model.LimitedType.lumino
-import net.danlew.displate.model.LimitedType.standard
-import net.danlew.displate.model.LimitedType.ultra
 import net.danlew.displate.model.OrderedDualDisplates
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.apache.commons.csv.CSVFormat
@@ -11,8 +9,6 @@ import org.apache.commons.csv.CSVPrinter
 import java.io.FileWriter
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.time.LocalDate
-import java.time.LocalDateTime
 import kotlin.io.path.exists
 
 object Output {
@@ -81,16 +77,5 @@ object Output {
     }
 
     return listOf(headers) + rows
-  }
-
-  private val PRICE_CUTOFF = LocalDate.of(2023, 7, 1)
-
-  private fun getCost(type: LimitedType, startDate: LocalDateTime): Int {
-    val lowerPrice = startDate.toLocalDate().isBefore(PRICE_CUTOFF)
-    return when (type) {
-      standard -> if (lowerPrice) 139 else 149
-      ultra -> if (lowerPrice) 289 else 299
-      lumino -> 299
-    }
   }
 }

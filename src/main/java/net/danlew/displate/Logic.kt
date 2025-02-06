@@ -8,6 +8,9 @@ import net.danlew.displate.model.Image
 import net.danlew.displate.model.Images
 import net.danlew.displate.model.LimitedDisplate
 import net.danlew.displate.model.LimitedType
+import net.danlew.displate.model.LimitedType.lumino
+import net.danlew.displate.model.LimitedType.standard
+import net.danlew.displate.model.LimitedType.ultra
 import net.danlew.displate.model.NormalDisplate
 import net.danlew.displate.model.OrderedDualDisplates
 import org.apache.commons.csv.CSVFormat
@@ -23,6 +26,17 @@ object Logic {
     val dualDisplateData = gatherNormalEditions(displateData) + archivalDataToUse
     return orderDisplates(dualDisplateData)
   }
+
+  fun getCost(type: LimitedType, startDate: LocalDateTime): Int {
+    val lowerPrice = startDate.toLocalDate().isBefore(PRICE_CUTOFF)
+    return when (type) {
+      standard -> if (lowerPrice) 139 else 149
+      ultra -> if (lowerPrice) 289 else 299
+      lumino -> 299
+    }
+  }
+
+  private val PRICE_CUTOFF = LocalDate.of(2023, 7, 1)
 
   private fun gatherLimitedEditionData(): List<LimitedDisplate> {
     val allLimitedDisplates = Api.queryLimitedEditions()!!
