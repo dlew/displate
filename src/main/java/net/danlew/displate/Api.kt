@@ -114,7 +114,7 @@ object Api {
   fun queryLuminos(): List<LimitedDisplate>? {
     client.newCall(
       Request.Builder()
-        .url("https://displate.com/elysium-api/general/v3/lumino/listing")
+        .url("https://displate.com/elysium-api/general/v5/lumino/listing")
         .get()
         .build()
     ).execute().use { response ->
