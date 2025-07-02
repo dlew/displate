@@ -8,6 +8,7 @@ import net.danlew.displate.model.Image
 import net.danlew.displate.model.Images
 import net.danlew.displate.model.LimitedDisplate
 import net.danlew.displate.model.LimitedType
+import net.danlew.displate.model.LimitedType.event_exclusive
 import net.danlew.displate.model.LimitedType.lumino
 import net.danlew.displate.model.LimitedType.standard
 import net.danlew.displate.model.LimitedType.ultra
@@ -30,6 +31,7 @@ object Logic {
   fun getCost(type: LimitedType, startDate: LocalDateTime): Int {
     val lowerPrice = startDate.toLocalDate().isBefore(PRICE_CUTOFF)
     return when (type) {
+      event_exclusive -> 99
       standard -> if (lowerPrice) 139 else 149
       ultra -> if (lowerPrice) 289 else 299
       lumino -> 299
