@@ -1,7 +1,7 @@
 plugins {
     id 'application'
-    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
-    id("com.google.devtools.ksp").version("1.6.10-1.0.2")
+    id 'org.jetbrains.kotlin.jvm' version '2.2.21'
+    id 'com.google.devtools.ksp' version '2.2.21-2.0.4'
 }
 
 group 'net.danlew'
@@ -12,17 +12,23 @@ repositories {
 }
 
 application {
-    mainClassName = 'net.danlew.displate.MainKt'
+    mainClass = 'net.danlew.displate.MainKt'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(24)
+    }
 }
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
 
-    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
+    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.3.2'
 
-    implementation 'com.squareup.moshi:moshi:1.13.0'
-    ksp 'com.squareup.moshi:moshi-kotlin-codegen:1.13.0'
+    implementation 'com.squareup.moshi:moshi:1.15.2'
+    ksp 'com.squareup.moshi:moshi-kotlin-codegen:1.15.2'
 
-    implementation 'org.apache.commons:commons-csv:1.9.0'
+    implementation 'org.apache.commons:commons-csv:1.14.1'
 }

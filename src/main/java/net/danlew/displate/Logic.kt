@@ -59,7 +59,7 @@ object Logic {
       .create(CSVFormat.DEFAULT)
       .setHeader()
       .setSkipHeaderRecord(true)
-      .build()
+      .get()
       .parse(reader)
 
     return records.map { record ->

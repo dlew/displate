@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 data class Lumino(
   val externalId: Int,
   val title: String,
-  @LuminoDateTime val startDate: LocalDateTime,
+  @param:LuminoDateTime val startDate: LocalDateTime,
   val author: Author,
   val image: ScaledImages,
 ) {
