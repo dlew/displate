@@ -3,7 +3,6 @@ package net.danlew.displate
 import com.squareup.moshi.Moshi
 import net.danlew.displate.model.*
 import net.danlew.displate.moshi.LocalDateTimeAdapter
-import net.danlew.displate.moshi.LuminoLocalDateTimeAdapter
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,8 +15,7 @@ import java.nio.file.Path
 object Api {
 
   private val DO_NOT_CACHE = listOf(
-    "https://sapi.displate.com/artworks/limited?miso=US".toHttpUrl(),
-    "https://displate.com/elysium-api/general/v3/lumino/listing".toHttpUrl()
+    "https://sapi.displate.com/artworks/limited?miso=US".toHttpUrl()
   )
 
   private val client = OkHttpClient.Builder()
@@ -54,7 +52,6 @@ object Api {
 
   val moshi = Moshi.Builder()
     .add(LocalDateTimeAdapter)
-    .add(LuminoLocalDateTimeAdapter)
     .build()
 
   fun queryLimitedEditions(): List<LimitedDisplate>? {
@@ -108,28 +105,6 @@ object Api {
         .adapter(NormalDisplateResponse::class.java)
         .fromJson(response.body!!.source())!!
         .data
-    }
-  }
-
-  fun queryLuminos(): List<LimitedDisplate>? {
-    client.newCall(
-      Request.Builder()
-        .url("https://displate.com/elysium-api/general/v5/lumino/listing")
-        .get()
-        .build()
-    ).execute().use { response ->
-      if (!response.isSuccessful) {
-        return null
-      }
-
-      val luminos = moshi
-        .adapter(LuminoResponse::class.java)
-        .fromJson(response.body!!.source())!!
-        .luminoListings
-
-      return luminos.active.map(Lumino::toLimitedDisplate) +
-          luminos.soldOut.map(Lumino::toLimitedDisplate) +
-          luminos.upcoming.map(Lumino::toLimitedDisplate)
     }
   }
 

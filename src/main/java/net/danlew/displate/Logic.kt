@@ -21,7 +21,7 @@ import java.time.LocalTime
 
 object Logic {
   fun fetchDisplateData(): List<OrderedDualDisplates> {
-    val displateData = gatherLimitedEditionData() + Api.queryLuminos()!!
+    val displateData = gatherLimitedEditionData()
     val displateIds = displateData.map { it.itemCollectionId }.toSet()
     val archivalDataToUse = loadArchivalDisplateData().filter { it.limited.itemCollectionId !in displateIds }
     val dualDisplateData = gatherNormalEditions(displateData) + archivalDataToUse
