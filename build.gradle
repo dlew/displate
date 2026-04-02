@@ -4,8 +4,8 @@ plugins {
     id 'com.google.devtools.ksp' version '2.2.21-2.0.4'
 }
 
-group 'net.danlew'
-version '1.0-SNAPSHOT'
+group = 'net.danlew'
+version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
